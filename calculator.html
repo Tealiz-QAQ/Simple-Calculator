@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Calculator</title>
+    <link rel="icon" type="image/x-icon" href="image/calculator.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+        body {
+          background-color: #CCFFFF;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+        }
+        .calculator {
+          padding: 10px;
+          border-radius: 1em;
+          height: 380px;
+          width: 300px;
+          background-color: #192821;
+          box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        }
+        .display-box {
+          font-family: 'Orbitron', sans-serif;
+          background-color: #dcdbe1;
+          border: solid black 0.5px;
+          color: black;
+          border-radius: 5px;
+          width: 280px;
+          height: 50px;
+          margin-bottom: 10px;
+          text-align: right;
+          padding: 10px;
+          font-size: 24px;
+        }
+        #btn {
+          background-color: #67a6ff;
+        }
+        input[type=button] {
+          font-family: 'Orbitron', sans-serif;
+          background-color: #cbcbcbe8;
+          color: rgb(44, 44, 44);
+          border: solid black 0.5px;
+          width: 55px;
+          border-radius: 5px;
+          height: 55px;
+          outline: none;
+          font-size: 20px;
+          cursor: pointer;
+        }
+        button:hover {
+          color: rgb(215, 68, 45);
+        }
+        input:active[type=button] {
+          background: #e5e5e5;
+          -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+          -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+        }
+        #equal{
+            background-color: #67a6ff;
+            height: 120px;
+        }
+        #cancel{
+            background-color: #ff0000e0;
+        }
+      </style>
+</head>
+<body>
+    <table class="calculator">
+		<tr>
+		  <td colspan="5"> <input class="display-box" type="text" id="result" disabled /> </td>
+		</tr>
+		<tr>
+		  <td> <input type="button" value="7" onclick="display('7')" /> </td>
+		  <td> <input type="button" value="8" onclick="display('8')" /> </td>
+		  <td> <input type="button" value="9" onclick="display('9')" /> </td>
+		  <td> <input type="button" value="+/-" onclick="toggleSign()" id="btn"/> </td>
+		  <td> <input type="button" value="DEL" onclick="del()" id="btn"/> </td>
+		</tr>
+		<tr>
+		  <td> <input type="button" value="4" onclick="display('4')" /> </td>
+		  <td> <input type="button" value="5" onclick="display('5')" /> </td>
+		  <td> <input type="button" value="6" onclick="display('6')" /> </td>
+		  <td> <input type="button" value="x" onclick="display('x')" id="btn"/> </td>
+		  <td> <input type="button" value="÷" onclick="display('÷')" id="btn"/> </td>
+		</tr>
+		<tr>
+		  <td> <input type="button" value="1" onclick="display('1')" /> </td>
+		  <td> <input type="button" value="2" onclick="display('2')" /> </td>
+		  <td> <input type="button" value="3" onclick="display('3')" /> </td>
+		  <td> <input type="button" value="-" onclick="display('-')" id="btn"/> </td>
+		  <td rowspan="2"> <input type="button" value="=" onclick="calculate()" id="equal"/> </td>
+		</tr>
+		<tr>
+		  <td> <input type="button" value="C" onclick="clearScreen()" id="cancel"/> </td>
+		  <td> <input type="button" value="0" onclick="display('0')" /> </td>
+		  <td> <input type="button" value="." onclick="display('.')" id="btn"/> </td>
+		  <td> <input type="button" value="+" onclick="display('+')" id="btn"/> </td>
+		  <td></td>
+		</tr>
+	  </table>
+    <script>
+      let isResultDisplayed = false;
+
+      function clearScreen() {
+        document.getElementById("result").value = "";
+        isResultDisplayed = false;
+      }
+      
+      function display(value) {
+        if (isResultDisplayed) {
+          clearScreen();
+        }
+        document.getElementById("result").value += value;
+        isResultDisplayed = false;
+      }
+      
+      function calculate() {
+        var p = document.getElementById("result").value;
+        p = p.replace(/x/g, "*").replace(/÷/g, "/");
+        var q = eval(p);
+        document.getElementById("result").value = q;
+        isResultDisplayed = true;
+      }
+
+      function toggleSign() {
+        var inputScreen = document.getElementById("result");
+        var input = inputScreen.value;
+        var lastOperatorIndex = Math.max(input.lastIndexOf('+'), input.lastIndexOf('-'), input.lastIndexOf('*'), input.lastIndexOf('/'));
+
+        if (lastOperatorIndex === -1) {
+          if (input[0] === '-') {
+            inputScreen.value = input.slice(1);
+          } else {
+            inputScreen.value = '-' + input;
+          }
+        } else {
+            var beforeOperator = input.slice(0, lastOperatorIndex + 1);
+            var numberPart = input.slice(lastOperatorIndex + 1);
+            if (numberPart[0] === '-') {
+              inputScreen.value = beforeOperator + numberPart.slice(1);
+            } else {
+            inputScreen.value = beforeOperator + '(-' + numberPart + ')';
+          }
+        }
+        isResultDisplayed = false;
+      }
+
+      function del() {
+        var inputScreen = document.getElementById("result");
+        var input = inputScreen.value;
+        if (input) {
+          inputScreen.value = input.slice(0, -1);
+        }
+        isResultDisplayed = false;
+      }
+    </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Calculator</title>
+    <link rel="icon" href="/img/cal.png" type="image/x-icon" />
+    <style>
+      body {
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 80vh;
+      }
+      .calc {
+        background: rgb(123, 162, 182);
+        border: 5px solid;
+        border-color: rgb(68, 68, 147);
+        border-radius: 10px;
+        width: 400px;
+        height: 470px;
+        overflow: hidden;
+      }
+      .calcshow {
+        width: 390px;
+        padding: 26px;
+        color: white;
+        text-align: left;
+        border: none;
+        background-color: rgb(123, 162, 182);
+      }
+      .key {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        gap: 15px;
+        padding: 17px;
+        position: relative;
+        left: 2px;
+      }
+      button {
+        width: 55px;
+        height: 55px;
+        border: 1px solid;
+        border-radius: 5px;
+        border-color: rgb(176, 175, 175);
+        background-color: rgb(215, 217, 218);
+        color: rgb(64, 118, 184);
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      button:hover {
+        color: rgb(215, 68, 45);
+      }
+      .operator-btn {
+        color: aliceblue;
+        background-color: rgb(138, 151, 151);
+      }
+      .operator-btn:hover {
+        color: rgb(232, 184, 220);
+      }
+      .tb {
+        width: 322px;
+        height: 90px;
+        border: 5px solid;
+        border-color: rgb(107, 105, 105);
+        border-radius: 10px;
+        position: relative;
+        left: 5px;
+      }
+      #one {
+        font-size: 1.3rem;
+      }
+      #equal {
+        background-color: rgb(138, 151, 151);
+        color: aliceblue;
+        grid-area: 3 / 5 / 5 / 6;
+        height: 123px;
+      }
+      #red {
+        background-color: rgb(221, 40, 40);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calc">
+      <div class="calcshow">
+        <table>
+          <tr>
+            <th colspan="3"><input class="tb" readonly /></th>
+          </tr>
+        </table>
+      </div>
+      <div class="key">
+        <button onclick="toDisplay('7')">7</button>
+        <button onclick="toDisplay('8')">8</button>
+        <button onclick="toDisplay('9')">9</button>
+        <button onclick="toDisplay('+/-')" class="operator-btn" id="one">+/-</button>
+        <button onclick="toDisplay('DEL')" class="operator-btn" id="one">DEL</button>
+
+        <button onclick="toDisplay('4')">4</button>
+        <button onclick="toDisplay('5')">5</button>
+        <button onclick="toDisplay('6')">6</button>
+        <button onclick="toDisplay('*')" class="operator-btn">x</button>
+        <button onclick="toDisplay('/')" class="operator-btn">/</button>
+
+        <button onclick="toDisplay('1')">1</button>
+        <button onclick="toDisplay('2')">2</button>
+        <button onclick="toDisplay('3')">3</button>
+        <button onclick="toDisplay('-')" class="operator-btn">-</button>
+        <button onclick="calculator()" id="equal">=</button>
+
+        <button onclick="clearDisplay()" class="operator-btn" id="red">C</button>
+        <button onclick="toDisplay('0')">0</button>
+        <button onclick="toDisplay('.')">.</button>
+        <button onclick="toDisplay('+')" class="operator-btn">+</button>
+      </div>
+    </div>
+  </body>
+</html>
