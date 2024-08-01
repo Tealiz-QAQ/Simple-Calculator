@@ -148,32 +148,42 @@
       }
 
       function chuyendoi() {
-        let value = kq.value.trim();
-        if (value !== "") {
+    let value = kq.value.trim();
+
+    if (value !== "") {
+        // Tìm số cuối cùng trong biểu thức
         let lastNumberMatch = value.match(/-?\d+(\.\d+)?$/);
 
         if (lastNumberMatch) {
-          let lastNumber = lastNumberMatch[0];
-          let toggledNumber;
-          if (value === lastNumber) {
-            if (lastNumber.startsWith("-")) {
-              toggledNumber = lastNumber.slice(1);
-            } else {
-              toggledNumber = `-${lastNumber}`;
-            }
-          } else {
-            if (lastNumber.startsWith("-")) {
-              toggledNumber = "-" +`(${lastNumber})`;
-            } else {
-              toggledNumber = `(-${lastNumber})`;
-            }
-          }
+            let lastNumber = lastNumberMatch[0];
+            let toggledNumber;
 
-          value = value.slice(0, -lastNumber.length) + toggledNumber;
-          kq.value = value;
+            // Kiểm tra nếu chỉ có một phần tử (một số duy nhất)
+            if (value === lastNumber) {
+                // Chuyển đổi dấu của số duy nhất
+                if (lastNumber.startsWith("-")) {
+                    toggledNumber = lastNumber.slice(1);
+                } else {
+                    toggledNumber = `-${lastNumber}`;
+                }
+            } else {
+                // Chuyển đổi dấu của số cuối cùng và đặt trong ngoặc đơn
+                if (lastNumber.startsWith("-")) {
+                    toggledNumber = "-" +`(${lastNumber})`;
+                } else {
+                    toggledNumber = `(-${lastNumber})`;
+                }
+            }
+
+            // Cập nhật biểu thức với số cuối cùng đã được chuyển đổi dấu
+            value = value.slice(0, -lastNumber.length) + toggledNumber;
+
+            // Cập nhật phần tử hiển thị với biểu thức mới
+            kq.value = value;
         }
-      }
     }
+}
+
     </script>
 </body>
 </html>
