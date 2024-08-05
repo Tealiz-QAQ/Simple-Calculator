@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Calculator</title>
-    <link rel="icon" type="image/x-icon" href="image/calculator.png">
+    <link rel="icon" type="image/x-icon" href="images/calculator.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
         body {
@@ -35,6 +35,10 @@
           text-align: right;
           padding: 10px;
           font-size: 24px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: block;
         }
         #btn {
           background-color: #67a6ff;
@@ -51,7 +55,7 @@
           font-size: 20px;
           cursor: pointer;
         }
-        button:hover {
+        input:hover {
           color: rgb(215, 68, 45);
         }
         input:active[type=button] {
@@ -107,8 +111,25 @@
       let checkKQ = false; //neu =true thi se xoa man hinh hien ket qua
       let kq = document.getElementById("result");
       let hienthi = "";
+      let allowOperator = false;
+
+      function checkSize() {
+        const displayBox = document.getElementById('result');
+        const maxFontSize = 24; // kích thước font lớn nhất
+        const minFontSize = 14; // kích thước font nhỏ nhất
+        let fontSize = maxFontSize;
+        displayBox.style.fontSize = `${fontSize}px`;
+        
+        while (displayBox.scrollWidth > displayBox.clientWidth && fontSize > minFontSize) {
+          fontSize--;
+          displayBox.style.fontSize = `${fontSize}px`;
+        }
+      }
 
       function display(value){
+        /*if (kq.value === "" && value ==="0"){
+          return;
+        }*/
         if (checkKQ){
             if (value === '+' || value === '-' || value === '×' || value === '÷'){
                 kq.value += value; //neu them toan tu thi se co toan tu sau ket qua
@@ -117,34 +138,25 @@
             }
             checkKQ = false;
         } else{
-            kq.value += value; //gia tri cua kq dc gan bang gia tri cua cac nut bam
+            let lastNumber = kq.value.split(/[\+\-\×\÷]/).pop();
+            if (lastNumber.length < 8 || (value === '+' || value === '-' || value === '×' || value === '÷')) {
+                kq.value += value; //gia tri cua kq dc gan bang gia tri cua cac nut bam
+            }
         }
+        checkSize();
       }
 
       function clearScreen(){
         kq.value= ""; //lam trong gia tri cua kq
         checkKQ = false;
-      }
-
-      function calculate(){
-        try{
-            var a = kq.value.replace(/×/g, "*").replace(/÷/g, "/"); //thay doi toan bo ky tu 'x' va '÷' thanh '*' va '/'
-            hienthi = eval(a); 
-            if (Number.isFinite(hienthi)) {
-                hienthi = parseFloat(hienthi.toPrecision(12));
-            }
-            kq.value = hienthi;
-            checkKQ = true;
-        } catch (e){
-            kq.value = "Error";
-            checkKQ = true;
-        }
+        checkSize();
       }
 
       function del(){
         hienthi = kq.value;
         kq.value = hienthi.slice(0, -1); //cat gia tri truoc con tro nhap lieu
         checkKQ = false;
+        checkSize();
       }
 
       function chuyendoi() {
@@ -162,17 +174,123 @@
               toggledNumber = `-${lastNumber}`;
             }
           } else {
-            if (lastNumber.startsWith("-")) {
-              toggledNumber = "-" +`(${lastNumber})`;
-            } else {
-              toggledNumber = `(-${lastNumber})`;
-            }
+            return;
           }
-
           value = value.slice(0, -lastNumber.length) + toggledNumber;
           kq.value = value;
         }
       }
+      checkSize();
+    }
+
+    function MulDiv(tokens) {
+        let resultArray = [];
+        let temp = BigInt(tokens[0]);
+
+        for (let i = 1; i < tokens.length; i += 2) {
+          const operator = tokens[i];
+          const nextNumber = BigInt(tokens[i + 1]);
+          if (operator === "×") {
+            temp *= nextNumber;
+          } else if (operator === "÷") {
+            temp /= nextNumber;
+          } else {
+            resultArray.push(temp);
+            resultArray.push(operator);
+            temp = nextNumber;
+          }
+        }
+        resultArray.push(temp); // Push the last number
+        return resultArray;
+      }
+
+      function AddSub(tokens) {
+        let result = tokens[0];
+
+        for (let i = 1; i < tokens.length; i += 2) {
+          const operator = tokens[i];
+          const nextNumber = BigInt(tokens[i + 1]);
+
+          if (operator === "+") {
+            result += nextNumber;
+          } else if (operator === "-") {
+            result -= nextNumber;
+          }
+        }
+        return result;
+      }
+
+      function calculate() {
+        if (kq.value === "") {
+          return;
+        } 
+
+        let expression = kq.value;
+        if (expression.startsWith("-")) {
+          expression = "0" + expression;
+        }
+        
+        //tách toán tử, tạo mảng chứa phần tử số, toán tử
+        const tokens = expression.split(/([+\-×÷])/);
+        let so = [];
+        let toantu = [];
+        // đẩy các phần tử vào mảng tương ứng
+        tokens.forEach(token => {
+          if (/\d/.test(token) || token === '.') {
+            so.push(token);
+          } else {
+            toantu.push(token);
+          }
+        });
+        console.log("Mảng số: " + so);
+        console.log("Mảng toán tử: " + toantu);
+        //kiểm tra số thập phân
+        const thapphan = so.some(so => so.includes('.'));
+        let result;
+        if (!thapphan) {
+            result = AddSub(MulDiv(tokens));
+        } else {
+          //đếm số chữ số đằng sau dấu "."
+          const maxDecimalPlaces = Math.max(...tokens.map(token => (token.includes('.') ? token.split('.')[1].length : 0)));
+          //tính 10^(số chữ số sau dấu ".")
+          const factor = Math.pow(10, maxDecimalPlaces);
+          console.log("Lũy thừa: " + factor);
+          let scaledTokens = [];
+
+          for (let i = 0; i < tokens.length; i++) {
+            if (/\d/.test(tokens[i])) {
+              scaledTokens.push(parseFloat(tokens[i]) * factor);
+            } else {
+              scaledTokens.push(tokens[i]);
+            }
+          }
+
+          let tempResult = MulDiv(scaledTokens);
+
+          for (let i = 0; i < toantu.length; i++) {
+            if (toantu[i] === "×") {
+              tempResult[i + 1] /= factor;
+              result = AddSub(tempResult) / (factor*factor);
+            } else if (toantu[i] === "÷") {
+              tempResult[i + 1] /= factor;
+              result = (AddSub(tempResult) / factor) * factor;
+            } else {
+              result = AddSub(tempResult) / factor;
+            }
+          }
+          /*if (MulDiv(scaledTokens) == "×"){
+            result = (AddSub(tempResult) / factor) / factor;
+          } else if (MulDiv(scaledTokens) == "÷"){
+            result = (AddSub(tempResult) * factor) / factor;
+          } else{
+            result = AddSub(tempResult) / factor;
+          }*/
+        }
+        kq.value = result.toString();
+        checkSize();
+        checkKQ = true; 
+        console.log("Nhập vào: " + tokens);
+        console.log("Kết quả: " + result);
     }
     </script>
 </body>
