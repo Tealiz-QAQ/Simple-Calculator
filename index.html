@@ -127,9 +127,6 @@
       }
 
       function display(value){
-        /*if (kq.value === "" && value ==="0"){
-          return;
-        }*/
         if (checkKQ){
             if (value === '+' || value === '-' || value === '×' || value === '÷'){
                 kq.value += value; //neu them toan tu thi se co toan tu sau ket qua
@@ -209,7 +206,7 @@
 
         for (let i = 1; i < tokens.length; i += 2) {
           const operator = tokens[i];
-          const nextNumber = BigInt(tokens[i + 1]);
+          const nextNumber = tokens[i + 1];
 
           if (operator === "+") {
             result += nextNumber;
@@ -275,16 +272,9 @@
               tempResult[i + 1] /= factor;
               result = (AddSub(tempResult) / factor) * factor;
             } else {
-              result = AddSub(tempResult) / factor;
+              result = AddSub(scaledTokens) / factor;
             }
           }
-          /*if (MulDiv(scaledTokens) == "×"){
-            result = (AddSub(tempResult) / factor) / factor;
-          } else if (MulDiv(scaledTokens) == "÷"){
-            result = (AddSub(tempResult) * factor) / factor;
-          } else{
-            result = AddSub(tempResult) / factor;
-          }*/
         }
         kq.value = result.toString();
         checkSize();
