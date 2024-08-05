@@ -182,11 +182,11 @@
 
     function MulDiv(tokens) {
         let resultArray = [];
-        let temp = BigInt(tokens[0]);
+        let temp = parseFloat(tokens[0]);
 
         for (let i = 1; i < tokens.length; i += 2) {
           const operator = tokens[i];
-          const nextNumber = BigInt(tokens[i + 1]);
+          const nextNumber = parseFloat(tokens[i + 1]);
           if (operator === "×") {
             temp *= nextNumber;
           } else if (operator === "÷") {
@@ -271,8 +271,8 @@
             } else if (toantu[i] === "÷") {
               tempResult[i + 1] /= factor;
               result = (AddSub(tempResult) / factor) * factor;
-            } else {
-              result = AddSub(scaledTokens) / factor;
+            } else{
+              result = AddSub(tempResult) / factor;
             }
           }
         }
